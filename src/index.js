@@ -1,12 +1,20 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import { render } from 'react-dom';
+import { createStore } from 'redux';
+import { makeEnhancer as makeReducersEnhancer } from '@redux-tools/reducers';
+import { Provider } from '@redux-tools/reducers-react';
+import { identity } from 'ramda';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import {Counter} from './components';
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+// `makeReducersEnhancer()` is an enhancer just like `applyMiddleware()`, so they're composable!
+const store = createStore(identity, makeReducersEnhancer());
+
+render(
+	<Provider store={store}>
+		<Counter namespace="foo" />
+		<Counter namespace="bar" />
+		<Counter namespace="baz" />
+	</Provider>,
+	document.getElementById('root')
+);
